@@ -5,7 +5,7 @@ import { supabase } from '../../lib/supabase';
 import { useApp, settle, num } from '../../lib/app';
 
 export default function Quote() {
-  const { cur, lists } = useApp();
+  const { cur, lists, isOwner } = useApp();
   const [exp, setExp] = useState([]); const [mem, setMem] = useState([]);
   const [mName, setMName] = useState(''); const [mW, setMW] = useState('1');
 
@@ -46,28 +46,36 @@ export default function Quote() {
   if (!cur) return <div className="card">Nessun elenco. Creane uno nella pagina <Link href="/elenchi"><b>Elenchi</b></Link>.</div>;
   const s = settle(exp, mem);
   const inMem = n => mem.some(m => m.username === n);
-  const name = lists.find(l => l.id === cur)?.name;
+  const curList = lists.find(l => l.id === cur);
 
   return (
     <div className="card">
-      <h3>Partecipanti e quote{name ? ` — ${name}` : ''}</h3>
-      <small>La quota è un peso: chi ha 2 paga il doppio di chi ha 1 (es. 0,5 per un bambino). Chi ha fatto una spesa partecipa con quota 1 se non indicato diversamente.</small>
-      {!s.rows.length && <p><small>Nessun partecipante ancora.</small></p>}
+      <h3>Partecipanti e quote{curList ? ` — ${curList.name}` : ''}</h3>
+      <small>
+        {isOwner
+          ? 'Solo gli utenti elencati qui possono vedere questo elenco e aggiungere spese: decidi tu chi, scrivendo il nome utente esatto. La quota è un peso: chi ha 2 paga il doppio di chi ha 1 (es. 0,5 per un bambino).'
+          : `Solo ${curList?.username}, che ha creato l'elenco, può aggiungere o togliere partecipanti e cambiare le quote.`}
+      </small>
       {s.rows.map(r => (
         <div className="row" key={r.n + r.w}>
-          <span>{r.n}</span>
+          <span>{r.n}{r.n === curList?.username && <small> (creatore)</small>}</span>
           <span className="f" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
-            <input style={{ maxWidth: 70, minWidth: 0 }} inputMode="decimal" defaultValue={r.w}
-              onBlur={x => num(x.target.value) !== r.w && setWeight(r.n, x.target.value)} />
-            {inMem(r.n) && <button className="g" title="Rimuovi" onClick={() => delMember(r.n)}>✕</button>}
+            {isOwner ? (
+              <input style={{ maxWidth: 70, minWidth: 0 }} inputMode="decimal" defaultValue={r.w}
+                onBlur={x => num(x.target.value) !== r.w && setWeight(r.n, x.target.value)} />
+            ) : <b>{r.w}</b>}
+            {isOwner && inMem(r.n) && r.n !== curList?.username &&
+              <button className="g" title="Rimuovi (non vedrà più l'elenco)" onClick={() => delMember(r.n)}>✕</button>}
           </span>
         </div>
       ))}
-      <div className="f" style={{ marginTop: 10 }}>
-        <input placeholder="Aggiungi utente…" value={mName} onChange={e => setMName(e.target.value)} />
-        <input inputMode="decimal" value={mW} onChange={e => setMW(e.target.value)} style={{ maxWidth: 70, minWidth: 0 }} />
-        <button onClick={addMember}>Aggiungi</button>
-      </div>
+      {isOwner && (
+        <div className="f" style={{ marginTop: 10 }}>
+          <input placeholder="Nome utente da aggiungere…" value={mName} onChange={e => setMName(e.target.value)} />
+          <input inputMode="decimal" value={mW} onChange={e => setMW(e.target.value)} style={{ maxWidth: 70, minWidth: 0 }} />
+          <button onClick={addMember}>Aggiungi</button>
+        </div>
+      )}
     </div>
   );
 }

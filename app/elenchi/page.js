@@ -14,7 +14,7 @@ export default function Elenchi() {
     const { data } = await supabase.from('lists').insert({ name: name.trim(), username: me }).select().single();
     setName('');
     await loadLists();
-    if (data) { pick(data.id); router.push('/'); }
+    if (data) { pick(data.id); router.push('/quote'); }
   };
   const open = id => { pick(id); router.push('/'); };
 
@@ -28,8 +28,8 @@ export default function Elenchi() {
         </div>
       </div>
       <div className="card">
-        <h3>Tutti gli elenchi</h3>
-        {!lists.length && <small>Nessun elenco</small>}
+        <h3>Elenchi a cui hai accesso</h3>
+        {!lists.length && <small>Nessun elenco. Crea il tuo, oppure chiedi a chi ne ha uno di aggiungerti tra i partecipanti.</small>}
         {lists.map(l => (
           <div className="row" key={l.id} style={{ alignItems: 'center' }}>
             <span><b>{l.name}</b> <small>— di {l.username}, {new Date(l.created_at).toLocaleDateString('it-IT')}</small></span>
