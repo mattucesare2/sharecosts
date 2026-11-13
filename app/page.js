@@ -87,7 +87,7 @@ export default function Spese() {
       </div>
 
       {exp.length > 0 && <>
-        <div className="card">
+        <div className="card hl">
           <h3>Totale: {eur(s.total)}</h3>
           {s.rows.map(r => (
             <div className="row" key={r.n}>
@@ -96,7 +96,7 @@ export default function Spese() {
             </div>
           ))}
         </div>
-        <div className="card">
+        <div className="card hl">
           <h3>Chi deve a chi</h3>
           {!s.out.length && <small>Tutto pareggiato 🎉</small>}
           {s.out.map((o, i) => <div className="row" key={i}><span>{o.from} → {o.to}</span><b>{eur(o.v)}</b></div>)}
