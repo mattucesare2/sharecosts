@@ -18,3 +18,31 @@ button.g{background:transparent;color:var(--mut);border:1px solid var(--bd)}
 .cmp .row{padding:3px 0;font-size:14px}
 .cmp button.g{padding:1px 8px}
 .cmp input{padding:5px 8px}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.tab{padding:7px 12px;border:1px solid var(--bd);border-radius:8px;color:var(--mut);text-decoration:none;font-size:14px}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+a{color:var(--ac)}
+/* caratteri più piccoli */
+body{font-size:14px}
+h1{font-size:24px}
+h3{font-size:15px}
+.ls{font-size:19px}
+.ls option{font-size:14px}
+.tab{font-size:13px;padding:6px 10px}
+.row{font-size:14px}
+.cmp .row{font-size:13px}
+input,select,button{font-size:14px}
+small{font-size:12px}
+/* tabelle riepilogo */
+.tb{width:100%;border-collapse:collapse;font-size:13px}
+.tb th,.tb td{padding:4px 6px;border-bottom:1px solid var(--bd);text-align:left}
+.tb th{font-size:12px;color:var(--mut);font-weight:600}
+.tb .r{text-align:right}
+/* stampa / PDF */
+@media print{
+  :root{--bg:#fff;--card:#fff;--tx:#000;--mut:#444;--bd:#bbb;--ac:#000}
+  body{background:#fff;color:#000;font-size:12px}
+  .np,.noprint{display:none!important}
+  main{max-width:none;padding:0}
+  .card{border:0;padding:0;margin:0;background:#fff}
+}
