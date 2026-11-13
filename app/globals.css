@@ -10,3 +10,11 @@ input,select{flex:1;min-width:110px;padding:10px;border:1px solid var(--bd);bord
 button{padding:10px 14px;border:0;border-radius:8px;background:var(--ac);color:#fff;font:inherit;cursor:pointer}
 button.g{background:transparent;color:var(--mut);border:1px solid var(--bd)}
 .err{color:#dc2626}h3{margin:0 0 8px}
+.hd{display:flex;align-items:baseline;gap:12px}
+.ls{flex:1;min-width:0;font-size:22px;font-weight:700;color:var(--ac);background:transparent;border:0;padding:0;cursor:pointer}
+.ls option{color:var(--tx);background:var(--card);font-size:16px;font-weight:400}
+.card{padding:12px;margin:10px 0}
+.row{padding:5px 0}
+.cmp .row{padding:3px 0;font-size:14px}
+.cmp button.g{padding:1px 8px}
+.cmp input{padding:5px 8px}

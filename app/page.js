@@ -139,26 +139,43 @@ function App({ user }) {
 
   return (
     <>
+      <div className="hd">
+        <h1>Sharecosts</h1>
+        <select className="ls" value={cur} onChange={e => setCur(e.target.value)} title="Elenco spese">
+          {!lists.length && <option value="">Nessun elenco</option>}
+          {lists.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+        </select>
+      </div>
       <div className="f" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <small>Ciao, <b>{me}</b></small>
+        <small>by Cesare Mattu v1.0 · ciao, <b>{me}</b></small>
         <button className="g" onClick={() => supabase.auth.signOut()}>Esci</button>
       </div>
-
-      <div className="card">
-        <h3>Elenco spese</h3>
-        <div className="f">
-          <select value={cur} onChange={e => setCur(e.target.value)}>
-            {!lists.length && <option value="">Nessun elenco</option>}
-            {lists.map(l => <option key={l.id} value={l.id}>{l.name} (di {l.username})</option>)}
-          </select>
-        </div>
-        <div className="f" style={{ marginTop: 10 }}>
-          <input placeholder="Nuovo elenco…" value={newList} onChange={e => setNewList(e.target.value)} />
-          <button onClick={addList}>Crea</button>
-        </div>
+      <div className="f" style={{ margin: '10px 0' }}>
+        <input placeholder="Nuovo elenco…" value={newList} onChange={e => setNewList(e.target.value)} />
+        <button onClick={addList}>Crea</button>
       </div>
 
       {cur && <>
+        <div className="card">
+          <h3>Partecipanti e quote</h3>
+          <small>La quota è un peso: chi ha 2 paga il doppio di chi ha 1 (es. 0,5 per un bambino).</small>
+          {s.rows.map(r => (
+            <div className="row" key={r.n + r.w}>
+              <span>{r.n}</span>
+              <span className="f" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
+                <input style={{ maxWidth: 70, minWidth: 0 }} inputMode="decimal" defaultValue={r.w}
+                  onBlur={x => num(x.target.value) !== r.w && setWeight(r.n, x.target.value)} />
+                {inMem(r.n) && <button className="g" title="Rimuovi" onClick={() => delMember(r.n)}>✕</button>}
+              </span>
+            </div>
+          ))}
+          <div className="f" style={{ marginTop: 10 }}>
+            <input placeholder="Aggiungi utente…" value={mName} onChange={e => setMName(e.target.value)} />
+            <input inputMode="decimal" value={mW} onChange={e => setMW(e.target.value)} style={{ maxWidth: 70, minWidth: 0 }} />
+            <button onClick={addMember}>Aggiungi</button>
+          </div>
+        </div>
+
         <div className="card">
           <h3>Nuova spesa</h3>
           <div className="f">
@@ -168,7 +185,7 @@ function App({ user }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="card cmp">
           <h3>Spese</h3>
           {!exp.length && <small>Nessuna spesa</small>}
           {exp.map(e => ed?.id === e.id ? (
@@ -192,26 +209,6 @@ function App({ user }) {
               </span>
             </div>
           ))}
-        </div>
-
-        <div className="card">
-          <h3>Partecipanti e quote</h3>
-          <small>La quota è un peso: chi ha 2 paga il doppio di chi ha 1 (es. 0,5 per un bambino).</small>
-          {s.rows.map(r => (
-            <div className="row" key={r.n + r.w}>
-              <span>{r.n}</span>
-              <span className="f" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
-                <input style={{ maxWidth: 70, minWidth: 0 }} inputMode="decimal" defaultValue={r.w}
-                  onBlur={x => num(x.target.value) !== r.w && setWeight(r.n, x.target.value)} />
-                {inMem(r.n) && <button className="g" title="Rimuovi" onClick={() => delMember(r.n)}>✕</button>}
-              </span>
-            </div>
-          ))}
-          <div className="f" style={{ marginTop: 10 }}>
-            <input placeholder="Aggiungi utente…" value={mName} onChange={e => setMName(e.target.value)} />
-            <input inputMode="decimal" value={mW} onChange={e => setMW(e.target.value)} style={{ maxWidth: 70, minWidth: 0 }} />
-            <button onClick={addMember}>Aggiungi</button>
-          </div>
         </div>
 
         {exp.length > 0 && <>
@@ -244,9 +241,13 @@ export default function Home() {
   }, []);
   return (
     <main>
-      <h1>Sharecosts</h1>
-      <small>by Cesare Mattu v1.0</small>
-      {user === undefined ? null : user ? <App user={user} /> : <Login />}
+      {user === undefined ? null : user ? <App user={user} /> : (
+        <>
+          <div className="hd"><h1>Sharecosts</h1></div>
+          <small>by Cesare Mattu v1.0</small>
+          <Login />
+        </>
+      )}
     </main>
   );
 }
